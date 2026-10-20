@@ -435,9 +435,13 @@ export async function seedInitialDataToFirestore(force = false): Promise<{
     };
   } catch (error: any) {
     console.error('Error seeding data to Firestore:', error);
+    const isPermissionError = error?.code === 'permission-denied' || error?.message?.includes('permissions');
+    const helpfulMsg = isPermissionError
+      ? 'Akses ditolak oleh Aturan Keamanan Firestore (Missing or insufficient permissions). Di Firebase Console > Firestore Database > tab "Rules", ubah aturan menjadi allow read, write: if true; lalu klik Publish.'
+      : (error?.message || 'Unknown error');
     return {
       success: false,
-      message: `Gagal menginisialisasi data ke Firebase Firestore: ${error?.message || 'Unknown error'}`
+      message: `Gagal menginisialisasi data ke Firebase Firestore: ${helpfulMsg}`
     };
   }
 }
@@ -470,9 +474,14 @@ export async function testFirestoreConnection(): Promise<{
     };
   } catch (err: any) {
     console.error('Firebase test connection error:', err);
+    const isPermission = err?.code === 'permission-denied' || err?.message?.includes('permissions');
+    const msg = isPermission
+      ? `Akses diblokir oleh Aturan Keamanan (Missing or insufficient permissions). Buka Firebase Console > Firestore Database > tab Rules, lalu set: allow read, write: if true; dan klik Publish.`
+      : (err?.message || 'Pastikan Firestore Database telah dibuat di Firebase Console dan aturan keamanan (Security Rules) mengizinkan akses.');
+
     return {
       connected: false,
-      message: `Koneksi ke Firestore Firebase gagal: ${err?.message || 'Pastikan Firestore Database telah dibuat di Firebase Console dan aturan keamanan (Security Rules) mengizinkan akses.'}`,
+      message: `Koneksi Firestore ditolak: ${msg}`,
       projectId: firebaseConfig.projectId
     };
   }

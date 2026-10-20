@@ -14,7 +14,8 @@ import {
   Copy,
   Check,
   ShieldCheck,
-  UploadCloud
+  UploadCloud,
+  ExternalLink
 } from 'lucide-react';
 import { AppSettings, User } from '../types';
 import { firebaseConfig, testFirestoreConnection, seedInitialDataToFirestore } from '../services/firebase';
@@ -251,28 +252,53 @@ service cloud.firestore {
           </div>
         </div>
 
-        {/* Firestore Rules Tip & Recommendation */}
-        <div className="p-4 bg-gray-50/70 dark:bg-gray-800/50 rounded-xl border border-gray-200/60 dark:border-gray-700/60 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-indigo-500" />
-              Aturan Keamanan Firestore (Security Rules) di Firebase Console
+        {/* Firestore Rules Tip & Troubleshooting */}
+        <div className="p-5 bg-amber-500/10 dark:bg-amber-950/20 rounded-2xl border border-amber-500/30 space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-500/20 pb-3">
+            <span className="text-xs font-bold text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-amber-500" />
+              Solusi Error "Missing or insufficient permissions" (Firebase Security Rules)
             </span>
-            <button
-              type="button"
-              onClick={handleCopyRules}
-              className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
-            >
-              {copiedRules ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copiedRules ? 'Tersalin!' : 'Salin Aturan'}</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <a
+                href={`https://console.firebase.google.com/project/${firebaseConfig.projectId}/firestore/rules`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs font-semibold px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg flex items-center gap-1.5 transition shadow-sm"
+              >
+                <span>Buka Tab Rules di Firebase Console</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+              <button
+                type="button"
+                onClick={handleCopyRules}
+                className="text-xs font-semibold px-3 py-1 bg-white dark:bg-gray-800 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-700 rounded-lg hover:bg-amber-50 dark:hover:bg-gray-700 flex items-center gap-1.5 transition"
+              >
+                {copiedRules ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+                <span>{copiedRules ? 'Tersalin!' : 'Salin Kode Rules'}</span>
+              </button>
+            </div>
           </div>
-          <p className="text-[11px] text-gray-500 dark:text-gray-400">
-            Pastikan di Firebase Console &gt; <strong>Firestore Database</strong> &gt; tab <strong>Rules</strong> sudah mengizinkan baca & tulis:
+
+          <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+            Pesan error <strong>"Missing or insufficient permissions"</strong> muncul karena aturan keamanan default Firestore di Firebase Console masih mengunci akses (<code>allow read, write: if false;</code>).
           </p>
-          <pre className="p-2.5 rounded-lg bg-gray-900 text-gray-100 text-[11px] font-mono overflow-x-auto">
-            {sampleRules}
-          </pre>
+
+          <div className="bg-white/80 dark:bg-gray-900/80 p-3 rounded-xl border border-amber-500/20 space-y-2 text-xs">
+            <p className="font-bold text-gray-900 dark:text-white">Langkah Cepat Memperbaikinya (30 Detik):</p>
+            <ol className="list-decimal list-inside space-y-1 text-gray-700 dark:text-gray-300">
+              <li>Klik tombol <strong>"Buka Tab Rules di Firebase Console"</strong> di atas.</li>
+              <li>Hapus aturan lama dan ganti dengan kode aturan di bawah ini:</li>
+            </ol>
+            <pre className="p-2.5 rounded-lg bg-gray-900 text-emerald-400 text-[11px] font-mono overflow-x-auto select-all">
+{sampleRules}
+            </pre>
+              <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                3. Klik tombol biru <strong>Publish</strong> di pojok kanan atas Firebase Console.
+                <br />
+                4. Setelah dipublish, klik tombol <strong>"Uji Koneksi Firestore"</strong> atau <strong>"Sinkron / Inisialisasi Data ke Cloud"</strong> di halaman ini.
+              </p>
+          </div>
         </div>
       </div>
 
