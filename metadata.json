@@ -1,0 +1,6 @@
+{
+  "name": "OB & OG Management Dashboard",
+  "description": "Dashboard Manajemen Office Boy & Office Girl Facility Management dengan Google Apps Script, Spreadsheet, Inspeksi, QR Check-in, & Laporan.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
